@@ -50,12 +50,18 @@ void DynamixelDriver::setTools(uint16_t model_number, uint8_t id)
   }
   else
   {
-    if (!strncmp(tools_[tools_cnt_-1].dxl_info_[0].model_name, findModelName(model_number), strlen(findModelName(model_number))))
-    {
-      tools_[--tools_cnt_].addDXL(model_number, id);
+    bool found = false;
+    for (int i = 0; i < tools_cnt_; ++i) {
+      if (!strncmp(tools_[i].dxl_info_[0].model_name,
+                   findModelName(model_number),
+                   strlen(findModelName(model_number)))) {
+        tools_[i].addDXL(model_number, id);
+        tools_cnt_--;
+        found = true;
+        break;
+      }
     }
-    else
-    {
+    if (found == false) {
       tools_[tools_cnt_].addTool(model_number, id);
     }
   }
