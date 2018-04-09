@@ -24,6 +24,7 @@
 
 #include <ros/ros.h>
 #include <std_msgs/Float64.h>
+#include <sensor_msgs/JointState.h>
 
 #include "message_header.h"
 
@@ -48,6 +49,7 @@ private:
   ros::ServiceServer joint_command_server_;
   ros::Subscriber joint_sub_[16];
   std::vector<ros::Publisher> joint_pubs_;
+  ros::Publisher joint_states_pub_;
 
   // ROS Service Client
 

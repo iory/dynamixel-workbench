@@ -85,6 +85,10 @@ void PositionControl::initPublisher() {
   dynamixel_state_list_pub_ =
       node_handle_.advertise<dynamixel_workbench_msgs::DynamixelStateList>(
           "dynamixel_state", 10);
+
+  joint_states_pub_ = node_handle_.advertise<sensor_msgs::JointState>
+      ("joint_states", 10);
+
   for (int i = 0; i < dxl_cnt_; ++i) {
     joint_sub_[i] = node_handle_.subscribe<std_msgs::Float64>(
         "arm_" + std::to_string(dxl_id_[i]) + "/command", 1,
@@ -107,6 +111,7 @@ void PositionControl::dynamixelStatePublish() {
   dynamixel_workbench_msgs::DynamixelState dynamixel_state[dxl_cnt_];
   dynamixel_workbench_msgs::DynamixelStateList dynamixel_state_list;
   dynamixel_msgs::JointState joint_state;
+  sensor_msgs::JointState joint_state_org;
 
   for (int index = 0; index < dxl_cnt_; index++) {
     dynamixel_state[index].model_name =
@@ -136,8 +141,14 @@ void PositionControl::dynamixelStatePublish() {
     joint_state.is_moving = dynamixel_state[index].moving;
     joint_pubs_[index].publish(joint_state);
 
+    os << index;
+    joint_state_org.name.push_back("JOINT" + os.str());
+    joint_state_org.position.push_back(joint_state.current_pos);
+    joint_state_org.velocity.push_back(joint_state.velocity);
   }
+  joint_state_org.header.stamp = ros::Time::now();
   dynamixel_state_list_pub_.publish(dynamixel_state_list);
+  joint_states_pub_.publish(joint_state_org);
 }
 
 void PositionControl::controlLoop() { dynamixelStatePublish(); }
