@@ -112,7 +112,7 @@ void PositionControl::dynamixelStatePublish() {
   dynamixel_workbench_msgs::DynamixelStateList dynamixel_state_list;
   dynamixel_msgs::JointState joint_state;
   sensor_msgs::JointState joint_state_org;
-
+  int reverse[] = {1, 1, 0, 1, 1, 1, 1, 1};
   for (int index = 0; index < dxl_cnt_; index++) {
     dynamixel_state[index].model_name =
         std::string(dxl_wb_->getModelName(dxl_id_[index]));
@@ -141,10 +141,33 @@ void PositionControl::dynamixelStatePublish() {
     joint_state.is_moving = dynamixel_state[index].moving;
     joint_pubs_[index].publish(joint_state);
 
-    os << index;
+    int rev;
+    os.str("");
+    if (index == 2) {
+        continue;
+    } else if (index > 2) {
+        os << (index - 1);
+        if (index - 1 == 6) {
+            rev = 0;
+        } else {
+            rev = reverse[index - 1];
+        }
+    } else {
+        os << index;
+        rev = reverse[index];
+    }
     joint_state_org.name.push_back("JOINT" + os.str());
-    joint_state_org.position.push_back(joint_state.current_pos);
-    joint_state_org.velocity.push_back(joint_state.velocity);
+    if (rev) {
+        joint_state_org.position.push_back(-joint_state.current_pos);
+    } else {
+        joint_state_org.position.push_back(joint_state.current_pos);
+    }
+    if (index == dxl_cnt_ - 1) {
+        os.str("");
+        os << index;
+        joint_state_org.name.push_back("JOINT" + os.str());
+        joint_state_org.position.push_back(joint_state.current_pos);
+    }
   }
   joint_state_org.header.stamp = ros::Time::now();
   dynamixel_state_list_pub_.publish(dynamixel_state_list);
