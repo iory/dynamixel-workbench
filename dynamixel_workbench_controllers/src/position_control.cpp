@@ -112,7 +112,7 @@ void PositionControl::dynamixelStatePublish() {
   dynamixel_workbench_msgs::DynamixelStateList dynamixel_state_list;
   dynamixel_msgs::JointState joint_state;
   sensor_msgs::JointState joint_state_org;
-  int reverse[] = {1, 1, 0, 1, 1, 1, 1, 1};
+  int reverse[] = {1, 0, 0, 1, 1, 1, 1, 1};
   for (int index = 0; index < dxl_cnt_; index++) {
     dynamixel_state[index].model_name =
         std::string(dxl_wb_->getModelName(dxl_id_[index]));
