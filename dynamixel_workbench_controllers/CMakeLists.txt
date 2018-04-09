@@ -53,10 +53,6 @@ add_executable(position_control src/position_control.cpp)
 add_dependencies(position_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(position_control ${catkin_LIBRARIES})
 
-add_executable(single_position_control src/single_position_control.cpp)
-add_dependencies(single_position_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(single_position_control ${catkin_LIBRARIES})
-
 add_executable(velocity_control src/velocity_control.cpp)
 add_dependencies(velocity_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(velocity_control ${catkin_LIBRARIES})
@@ -72,7 +68,7 @@ target_link_libraries(torque_control ${catkin_LIBRARIES})
 #################################################################################
 ## Install
 #################################################################################
-install(TARGETS position_control single_position_control velocity_control multi_port torque_control
+install(TARGETS position_control multi_port torque_control
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
